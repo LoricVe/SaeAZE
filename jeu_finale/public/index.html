@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Actor Guessing Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="mode-controls">
+            <button id="game-mode" class="mode-btn active">Game Mode</button>
+            <button id="search-mode" class="mode-btn">Search Mode</button>
+            <button id="quiz-mode" class="mode-btn">Quiz Mode</button>
+        </div>
+        
+        <div id="game-area">
+            <div id="graph-container"></div>
+            
+            <div id="puzzle-area">
+                <div id="game-controls">
+                    <button id="start-game">Start Game</button>
+                    <div id="game-info" style="display: none;">
+                        <span>Question: <span id="question-number">1</span>/10</span>
+                        <span>Score: <span id="current-score">0</span>/10</span>
+                    </div>
+                </div>
+                <div id="question"></div>
+                <div id="input-area">
+                    <input type="text" id="answer-input" placeholder="Enter your answer...">
+                    <button id="submit-answer">Submit</button>
+                    <button id="skip-question" class="skip-btn">Skip</button>
+                </div>
+                <div id="result"></div>
+            </div>
+
+            <div id="search-area" style="display: none;">
+                <div class="search-controls">
+                    <div class="search-type">
+                        <label>
+                            <input type="radio" name="search-type" value="movie" checked>
+                            Movie
+                        </label>
+                        <label>
+                            <input type="radio" name="search-type" value="actor">
+                            Actor
+                        </label>
+                    </div>
+                    <div class="search-input">
+                        <input type="text" id="search-input" placeholder="Search for a movie or actor...">
+                        <button id="search-button">Search</button>
+                    </div>
+                </div>
+                <div id="search-result"></div>
+            </div>
+        </div>
+    </div>
+    <script src="quiz.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 

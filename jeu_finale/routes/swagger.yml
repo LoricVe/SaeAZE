@@ -1,0 +1,393 @@
+openapi: 3.0.0
+info:
+  title: Movie and Actor API
+  description: API for movie and actor information query and quiz functionality
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  /movies/random:
+    get:
+      summary: Get random movie
+      description: Returns a random movie from the database
+      responses:
+        '200':
+          description: Successfully retrieved random movie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "movie"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      year:
+                        type: integer
+        '404':
+          description: Movie not found
+        '500':
+          description: Server error
+
+  /movies/{id}/details:
+    get:
+      summary: Get movie details
+      description: Returns detailed information about a movie, including actors, type, poster, and description
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved movie details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movie:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      year:
+                        type: integer
+                      posterUrl:
+                        type: string
+                      extract:
+                        type: string
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        photoUrl:
+                          type: string
+                        biography:
+                          type: string
+                  genres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+        '404':
+          description: Movie not found
+        '500':
+          description: Server error
+
+  /movies/verify:
+    post:
+      summary: Verify movie answer
+      description: Verify if the user's answer for a movie is correct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                answer:
+                  type: string
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  correct:
+                    type: boolean
+                  correctAnswer:
+                    type: string
+        '400':
+          description: Missing parameters
+        '404':
+          description: Movie not found
+        '500':
+          description: Server error
+
+  /actors/random:
+    get:
+      summary: Get random actor
+      description: Returns a random actor from the database
+      responses:
+        '200':
+          description: Successfully retrieved random actor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "actor"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+        '404':
+          description: Actor not found
+        '500':
+          description: Server error
+
+  /actors/{id}/details:
+    get:
+      summary: Get actor details
+      description: Returns detailed information about an actor, including movies, photo, and biography
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully retrieved actor details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actor:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      photoUrl:
+                        type: string
+                      biography:
+                        type: string
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        year:
+                          type: integer
+                        posterUrl:
+                          type: string
+                        extract:
+                          type: string
+        '404':
+          description: Actor not found
+        '500':
+          description: Server error
+
+  /actors/verify:
+    post:
+      summary: Verify actor answer
+      description: Verify if the user's answer for an actor is correct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                answer:
+                  type: string
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  correct:
+                    type: boolean
+                  correctAnswer:
+                    type: string
+        '400':
+          description: Missing parameters
+        '404':
+          description: Actor not found
+        '500':
+          description: Server error
+
+  /quiz/generate:
+    get:
+      summary: Generate quiz
+      description: Generates quiz questions based on specified type
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [actor_in_movie, movie_by_actor, movies_by_year]
+      responses:
+        '200':
+          description: Successfully generated quiz
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  question:
+                    type: string
+                  answers:
+                    type: array
+                    items:
+                      type: string
+                  centerNode:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                  relatedNodes:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Invalid quiz type
+        '500':
+          description: Server error
+
+  /search:
+    get:
+      summary: Search for movie or actor
+      description: Searches for a movie or actor based on keywords
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [movie, actor]
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  results:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Missing or invalid parameters
+        '500':
+          description: Server error
+
+  /game/random:
+    get:
+      summary: Get random movie or actor
+      description: Returns a random movie or actor
+      responses:
+        '200':
+          description: Successfully retrieved random entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [movie, actor]
+                    example: "movie"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      name:
+                        type: string
+        '500':
+          description: Server error
+
+  /game/verify:
+    post:
+      summary: Verify answer
+      description: Verify if the user's answer for a movie or actor is correct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - id
+                - answer
+              properties:
+                type:
+                  type: string
+                  enum: [movie, actor]
+                  description: Entity type
+                id:
+                  type: integer
+                  description: Entity ID
+                answer:
+                  type: string
+                  description: User's answer
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  correct:
+                    type: boolean
+                    description: Whether the answer is correct
+                  correctAnswer:
+                    type: string
+                    description: Correct answer
+        '400':
+          description: Missing parameters
+        '404':
+          description: Entity not found
+        '500':
+          description: Server error
